@@ -1,0 +1,31 @@
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        image: e2atalk-app
+        container_name: e2atalk-app
+        volumes:
+            - .:/var/www
+        working_dir: /var/www
+        expose:
+            - "9000"
+        environment:
+            APP_ENV: production
+            APP_KEY: base64:CHAVE_GERADA
+            APP_DEBUG: false
+            APP_URL: https://e2atalk.seudominio.com
+
+            DB_CONNECTION: mysql
+            DB_HOST: ia_mysql
+            DB_PORT: 3306
+            DB_DATABASE: e2atalk
+            DB_USERNAME: mysql
+            DB_PASSWORD: cda31502d8ccf17c42b7
+
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.e2atalk.rule=Host(`app.e2atalk.com`)"
+            - "traefik.http.routers.e2atalk.entrypoints=websecure"
+            - "traefik.http.routers.e2atalk.tls.certresolver=myresolver"
+            - "traefik.http.services.e2atalk.loadbalancer.server.port=9000"

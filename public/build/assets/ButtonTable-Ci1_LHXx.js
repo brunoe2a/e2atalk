@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{o,e as s,r as n}from"./app-DdRYZDN8.js";const r={},a={class:"text-xs font-semibold leading-tight text-slate-400"};function c(t,l){return o(),s("button",a,[n(t.$slots,"default")])}const i=e(r,[["render",c]]);export{i as B};

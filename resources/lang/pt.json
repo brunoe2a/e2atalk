@@ -1,0 +1,21 @@
+{
+    "login.title": "Digite seu e-mail e senha para entrar.",
+    "login.remember": "Lembrar de mim",
+    "login.email": "E-mail",
+    "login.password": "Senha",
+    "login.signin": "Entrar",
+    "login.notaccount": "Não tem uma conta?",
+    "login.signup": "Inscreva-se",
+
+    "sidebar.config.instance": "Instâncias",
+    "sidebar.config.error": "Erros",
+    "sidebar.link.dashboard": "Início",
+    "sidebar.link.settings": "Configuração",
+    "sidebar.link.users": "Usuários",
+    "sidebar.link.listcontacts": "Lista de Contatos",
+    "sidebar.link.contacts": "Contatos",
+    "sidebar.link.campaign": "Campanha",
+    "sidebar.link.service": "Atendimento",
+    "sidebar.link.logout": "Sair",
+    "sidebar.divider.administrator": "Painel do Administrador"
+}

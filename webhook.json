@@ -1,0 +1,8 @@
+{
+    "error":false,
+    "message":"Requisi\u00e7\u00e3o processada com sucesso",
+    "response":
+    {
+        "ack":1,
+        "id":"true_556596449987@c.us_3EB03803F3353EE56EC51E",
+        "sendMsgResult":{"messageSendResult":"OK"}},"device":{"status":"inChat","device_token":"35adc35d-094c-4faa-ac3f-e1e13dc6a066","device_name":"zap_creci_mt"},"time":6.59}

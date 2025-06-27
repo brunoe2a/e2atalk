@@ -1,0 +1,21 @@
+{
+    "login.title": "Enter your email and password to sign in",
+    "login.remember": "Remember me",
+    "login.email": "Email",
+    "login.password": "Password",
+    "login.signin": "Sign in",
+    "login.notaccount": "Don't have an account?",
+    "login.signup": "Sign up",
+
+    "sidebar.config.instance": "Instance",
+    "sidebar.config.error": "Errors",
+    "sidebar.link.dashboard": "Dashboard",
+    "sidebar.link.settings": "Settings",
+    "sidebar.link.users": "Users",
+    "sidebar.link.listcontacts": "Contact List",
+    "sidebar.link.contacts": "Contacts",
+    "sidebar.link.campaign": "Campaign",
+    "sidebar.link.service": "Call Center",
+    "sidebar.link.logout": "Log Out",
+    "sidebar.divider.administrator": "Administrator Panel"
+}

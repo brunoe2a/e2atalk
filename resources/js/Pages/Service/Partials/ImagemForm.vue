@@ -1,0 +1,154 @@
+<script setup>
+import { useForm } from '@inertiajs/vue3';
+import { ref } from 'vue';
+import ButtonPadrao from "@/Components/Softui/Button/ButtonPadrao.vue";
+import Modal from "@/Components/old/Modal.vue";
+import InputError from "@/Components/old/InputError.vue";
+import ButtonSave from "@/Components/Softui/Button/ButtonSave.vue";
+import InputLabel from "@/Components/old/InputLabel.vue";
+import InputSoftUi from "@/Components/Softui/Form/InputSoftUi.vue";
+
+const props = defineProps({
+    sessao_id: {
+        type: Number,
+        required: true,
+    },
+    contato_id: {
+        type: Number,
+        required: true,
+    },
+});
+
+const anexarImagem = ref(false);
+const isDragging = ref(false);  // Controle de estado de arrastar
+const fileInput = ref(null);    // Referência para o input de arquivo
+const emit = defineEmits(['closeAnexo']);
+
+const form = useForm({
+    sessao_id: props.sessao_id,
+    contato_id: props.contato_id,
+    caption: '',
+    arquivo: null,
+});
+
+const confirmAnexoImagem = () => {
+    anexarImagem.value = true;
+};
+
+// Função chamada ao soltar o arquivo na área de drag-and-drop
+const onDrop = (event) => {
+    isDragging.value = false;
+    if (event.dataTransfer.files.length) {
+        form.arquivo = event.dataTransfer.files[0];
+    }
+};
+
+// Função chamada quando o arquivo é arrastado sobre a área
+const onDragOver = () => {
+    isDragging.value = true;
+};
+
+// Função chamada quando o arquivo sai da área sem ser solto
+const onDragLeave = () => {
+    isDragging.value = false;
+};
+
+// Função para abrir o seletor de arquivos ao clicar na área
+const triggerFileSelect = () => {
+    if (fileInput.value) {
+        fileInput.value.click();
+    }
+};
+
+const salvar = () => {
+    form.post(route('service.messages.sendImage'), {
+        preserveScroll: true,
+        onSuccess: () => closeModal(),
+        onFinish: () => form.reset(),
+    });
+};
+
+const closeModal = () => {
+    anexarImagem.value = false;
+    emit('closeAnexo');
+    form.reset();
+};
+</script>
+
+<template>
+    <section class="space-y-6">
+        <li @click="confirmAnexoImagem" class="flex py-2 items-center transition duration-300 hover:text-sky-500 hover:cursor-pointer">
+            <svg class="w-6 h-6 text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="currentColor" viewBox="0 0 24 24">
+                <path fill-rule="evenodd" d="M13 10a1 1 0 0 1 1-1h.01a1 1 0 1 1 0 2H14a1 1 0 0 1-1-1Z" clip-rule="evenodd"/>
+                <path fill-rule="evenodd" d="M2 6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12c0 .556-.227 1.06-.593 1.422A.999.999 0 0 1 20.5 20H4a2.002 2.002 0 0 1-2-2V6Zm6.892 12 3.833-5.356-3.99-4.322a1 1 0 0 0-1.549.097L4 12.879V6h16v9.95l-3.257-3.619a1 1 0 0 0-1.557.088L11.2 18H8.892Z" clip-rule="evenodd"/>
+            </svg>
+            <span class="ml-3">Imagem</span>
+        </li>
+
+        <Modal :show="anexarImagem" @close="closeModal">
+            <div class="p-6">
+                <h2 class="text-xl font-medium text-gray-900">
+                    Anexar Imagem
+                </h2>
+
+                <hr class="my-4" />
+
+                <div class="mb-5">
+                    <!-- Área de arrastar e soltar -->
+                    <div
+                        class="w-full h-48 border-4 cursor-pointer border-dashed border-gray-300 rounded-lg flex items-center justify-center bg-gray-50"
+                        @dragover.prevent="onDragOver"
+                        @dragleave.prevent="onDragLeave"
+                        @drop.prevent="onDrop"
+                        @click="triggerFileSelect"
+                        :class="{
+                          'border-blue-500 bg-blue-50': isDragging,
+                          'border-gray-300': !isDragging
+                        }"
+                    >
+                        <p class="text-gray-500" v-if="!form.arquivo">Arraste e solte um arquivo aqui ou clique para selecionar</p>
+                        <p class="text-green-600" v-else>{{ form.arquivo.name }}</p>
+                    </div>
+                    <!-- Input padrão para upload -->
+                    <input
+                        v-show="false"
+                        ref="fileInput"
+                        @input="form.arquivo = $event.target.files[0]"
+                        id="file_input"
+                        type="file"
+                    >
+                    <progress v-if="form.progress" :value="form.progress.percentage" class="w-full bg-green-600 rounded-full h-2.5 my-3" max="100">
+                        {{ form.progress.percentage }}%
+                    </progress>
+                    <InputError class="mt-2" :message="form.errors.arquivo" />
+                </div>
+
+                <div class="mb-4">
+                    <input
+                        placeholder="Digite uma legenda..."
+                        v-model="form.caption"
+                        class="w-full h-12 px-4 py-3 border border-slate-300 rounded-lg bg-white text-slate-500 focus:border-sky-500 focus:ring-sky-500"
+                    />
+                    <InputError class="mt-2" :message="form.errors.caption" />
+                </div>
+
+                <div class="mt-6 flex justify-end">
+                    <ButtonPadrao @click="closeModal" cor="light">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-5 mr-2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" />
+                        </svg>
+                        Cancel
+                    </ButtonPadrao>
+                    <ButtonSave
+                        cor="green"
+                        class="ms-3"
+                        :class="{ 'opacity-25': form.processing }"
+                        :disabled="form.processing"
+                        @click="salvar"
+                    >Enviar</ButtonSave>
+                </div>
+            </div>
+        </Modal>
+    </section>
+</template>
+
