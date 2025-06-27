@@ -1,20 +1,32 @@
+# Use a imagem oficial do PHP com FPM
 FROM php:8.2-fpm
 
+# Instalar dependências do sistema
 RUN apt-get update && apt-get install -y \
-    git curl zip unzip libzip-dev libpng-dev libonig-dev libxml2-dev libjpeg-dev libfreetype6-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install pdo pdo_mysql mbstring zip exif pcntl gd
+    git \
+    curl \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    zip \
+    unzip \
+    default-mysql-client
 
+# Instalar extensões PHP necessárias para Laravel
+RUN docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd
+
+# Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
-WORKDIR /var/www
+# Definir diretório de trabalho
+WORKDIR /var/www/html
 
+# Copiar o projeto Laravel
 COPY . .
 
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+# Instalar dependências do projeto
+RUN composer install --no-dev --optimize-autoloader
 
-RUN chown -R www-data:www-data /var/www && chmod -R 775 /var/www/storage /var/www/bootstrap/cache
-
-EXPOSE 9000
-
-CMD ["php-fpm"]
+# Configurar permissões
+RUN chown -R www-data:www-data /var/www/html/storage
+RUN chmod -R 775 /var/www/html/storage
