@@ -1,22 +1,33 @@
+version: "3.9"
+
 services:
     app:
         build:
             context: .
             dockerfile: Dockerfile
+        image: e2atalk-app
+        container_name: e2atalk-app
         volumes:
-            - .:/var/www/html
+            - .:/var/www
+        working_dir: /var/www
+        expose:
+            - "9000"
         environment:
-            - DB_HOST=mysql
-            - DB_DATABASE=laravel
-            - DB_USERNAME=root
-            - DB_PASSWORD=secret
+            APP_ENV: production
+            APP_KEY: base64:zulW3+CSaTO+Jn4Zmh94beXeQvDJLNkI8SNhKVJC9OM=
+            APP_DEBUG: false
+            APP_URL: https://app.e2atalk.com
 
-    nginx:
-        image: nginx:alpine
-        volumes:
-            - .:/var/www/html
-            - ./nginx.conf:/etc/nginx/conf.d/default.conf
-        ports:
-            - "80:80"
-        depends_on:
-            - app
+            DB_CONNECTION: mysql
+            DB_HOST: ia_mysql
+            DB_PORT: 3306
+            DB_DATABASE: e2atalk
+            DB_USERNAME: mysql
+            DB_PASSWORD: cda31502d8ccf17c42b7
+
+        labels:
+            - "traefik.enable=true"
+            - "traefik.http.routers.e2atalk.rule=Host(`app.e2atalk.com`)"
+            - "traefik.http.routers.e2atalk.entrypoints=websecure"
+            - "traefik.http.routers.e2atalk.tls.certresolver=myresolver"
+            - "traefik.http.services.e2atalk.loadbalancer.server.port=9000"
